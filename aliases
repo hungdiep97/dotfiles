@@ -1,0 +1,24 @@
+# Unix
+alias ll="ls -al"
+alias ln="ln -v"
+alias mkdir="mkdir -p"
+alias cc="clear"
+
+alias ws=~/Desktop/workspace/
+alias lx=~/Desktop/workspace/lixibox/lixibox
+alias halio=~/Desktop/workspace/lixibox/halio-warranty
+alias sidekiq="bundle exec sidekiq"
+alias be="bundle exec"
+alias s="source ~/.zshrc"
+alias m="rails db:migrate"
+alias df="cd ~/dotfiles"
+alias v="vim"
+alias mux="tmuxinator"
+# Bundler
+alias b="bundle"
+
+# Rails
+alias migrate="rake db:migrate db:rollback && rake db:migrate db:test:prepare"
+
+# Pretty print the path
+alias path='echo $PATH | tr -s ":" "\n"'
