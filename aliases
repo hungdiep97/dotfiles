@@ -5,8 +5,6 @@ alias mkdir="mkdir -p"
 alias cc="clear"
 
 alias ws=~/Desktop/workspace/
-alias lx=~/Desktop/workspace/lixibox/lixibox
-alias halio=~/Desktop/workspace/lixibox/halio-warranty
 alias sidekiq="bundle exec sidekiq"
 alias be="bundle exec"
 alias s="source ~/.zshrc"
