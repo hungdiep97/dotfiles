@@ -27,7 +27,7 @@ endif
 
 " RUBY
 Plug 'slim-template/vim-slim'
-Plug 'xmisao/rubyjump.vim'
+" Plug 'xmisao/rubyjump.vim'
 Plug 'tpope/vim-bundler'
 Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-rails'
@@ -37,12 +37,16 @@ Plug 'vim-ruby/vim-ruby'
 Plug 'ThanhKhoaIT/rails-db-migrate.vim'
 Plug 'kana/vim-textobj-user'
 Plug 'nelstrom/vim-textobj-rubyblock'
+Plug 'tpope/vim-cucumber'
 
 " SOLIDITY
 Plug 'tomlion/vim-solidity'
 
 " RUST
 Plug 'rust-lang/rust.vim'
+
+" REACTJS
+Plug 'Ivo-Donchev/vim-react-goto-definition'
 
 " VIM
 Plug 'tpope/vim-eunuch'
@@ -81,11 +85,14 @@ Plug 'vim-airline/vim-airline-themes'
 " Plug 'mhinz/vim-startify'
 
 " Git
-Plug 'ThanhKhoaIT/git-message.vim'
 Plug 'tpope/vim-fugitive'
 
 " Code comment
 Plug 'vim-scripts/tComment'
+
+" Javascipt
+Plug 'pangloss/vim-javascript'
+Plug 'mxw/vim-jsx'
 
 if g:has_async
  " Plug 'dense-analysis/ale'

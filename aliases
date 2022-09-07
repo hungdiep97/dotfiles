@@ -1,16 +1,14 @@
 # Unix
-alias ll="ls -al"
-alias ln="ln -v"
-alias mkdir="mkdir -p"
 alias cc="clear"
 
-alias ws=~/Desktop/workspace/
+alias ctags="`brew --prefix`/bin/ctags"
 alias sidekiq="bundle exec sidekiq"
 alias be="bundle exec"
 alias s="source ~/.zshrc"
 alias m="rails db:migrate"
 alias df="cd ~/dotfiles"
-alias v="vim"
+# Use homebrew vim instead of system built-in vim
+alias v="/opt/homebrew/opt/vim/bin/vim"
 alias mux="tmuxinator"
 # Bundler
 alias b="bundle"

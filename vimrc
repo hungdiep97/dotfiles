@@ -13,6 +13,7 @@ set expandtab
 set timeoutlen=500 ttimeoutlen=0
 " Set tags for vim-fugitive
 set tags^=.git/tags
+set tags=tags"
 
 " Open new split panes to right and bottom, which feels more natural
 set splitbelow
@@ -52,42 +53,40 @@ set nocompatible " We're running Vim, not Vi!
 nnoremap <SPACE> <Nop>
 " END SET ==================================================
 
-
 " COMMAND ==================================================
 command ForceKillRails !kill -9 $(cat tmp/pids/server.pid)
+nmap <Leader>krs :ForceKillRails <CR>
 " ENDCOMMAND
 " LET ==================================================
 let mapleader=" "
-let g:airline_section_b = '%f'
-let g:airline_section_c = ''
-let g:airline_section_x = '%{FugitiveStatusline()}'
-let g:airline_section_y = ''
+let g:airline_theme='kolor'
+
 let g:tmux_navigator_no_mappings = 1
 let g:better_whitpace_enabled=1
 
-let g:ale_linters = {
-      \ 'javascript': ['eslint', 'prettier'],
-      \ 'typescript': ['eslint', 'prettier', 'typecheck'],
-      \ 'c': ['clang', 'gcc'],
-      \ 'ruby': ['rubocop'],
-      \ 'dockerfile': ['hadolint'],
-      \ 'eruby': ['erubi'],
-      \ 'json': ['jsonlint'],
-      \ 'yaml': ['yamllint'],
-      \ }
-let g:ale_fixers = {
-      \ 'javascript': ['eslint', 'prettier'],
-      \ 'typescript': ['eslint', 'prettier'],
-      \ 'ruby': ['rubocop'],
-      \ 'json': ['jq', 'fixjson'],
-      \ '*': ['trim_whitespace']
-      \ }
-let g:ale_lint_on_text_changed = 'normal'
-let g:ale_fix_on_save = 0
-let g:ale_linters_explicit = 1
-let g:ale_ruby_rubocop_executable = 'bundle'
-let g:indentLine_char = '¦'
-let g:indentLine_color_term = 239
+" let g:ale_linters = {
+"       \ 'javascript': ['eslint', 'prettier'],
+"       \ 'typescript': ['eslint', 'prettier', 'typecheck'],
+"       \ 'c': ['clang', 'gcc'],
+"       \ 'ruby': ['rubocop'],
+"       \ 'dockerfile': ['hadolint'],
+"       \ 'eruby': ['erubi'],
+"       \ 'json': ['jsonlint'],
+"       \ 'yaml': ['yamllint'],
+"       \ }
+" let g:ale_fixers = {
+"       \ 'javascript': ['eslint', 'prettier'],
+"       \ 'typescript': ['eslint', 'prettier'],
+"       \ 'ruby': ['rubocop'],
+"       \ 'json': ['jq', 'fixjson'],
+"       \ '*': ['trim_whitespace']
+"       \ }
+" let g:ale_lint_on_text_changed = 'normal'
+" let g:ale_fix_on_save = 0
+" let g:ale_linters_explicit = 1
+" let g:ale_ruby_rubocop_executable = 'bundle'
+" let g:indentLine_char = '¦'
+" let g:indentLine_color_term = 239
 let g:auto_save = 1  " enable AutoSave on Vim startup
 let g:move_key_modifier = 'C'
 
@@ -103,10 +102,22 @@ let g:multi_cursor_select_all_word_key = 'g<C-a>'
 "GIT
 nmap <Leader>gs :Gst<CR>
 
+"AUTO SAVE
+nmap <Leader>as :AutoSaveToggle<CR>
+
+"ReactJS
+nmap <Leader>rd :call ReactGotoDef()<CR>
+" Go to import path with split vertical window
+nmap <Leader>rgf <C-W>f<C-W>t<C-W>H
+
+"Common
 nmap F za
 nmap <Leader>dp :Dispatch<SPACE>
 nmap <Leader>f :Rg<SPACE>
+
+"Rails
 nmap fa :RGrails <C-R><C-W><CR>
+nmap fg :RGall <C-R><C-W><CR>
 nmap fm :RGmodel <C-R><C-W><CR>
 nmap fv :RGview <C-R><C-W><CR>
 nmap fc :RGcontroller <C-R><C-W><CR>
@@ -115,6 +126,7 @@ nmap fj :RGjs <C-R><C-W><CR>
 nmap fr :RGruby <C-R><C-W><CR>
 nmap fb :RGblueprint <C-R><C-W><CR>
 nmap <Leader>fa :RGrails<SPACE>
+nmap <Leader>fg :RGall<SPACE>
 nmap <Leader>fm :RGmodel<SPACE>
 nmap <Leader>fv :RGview<SPACE>
 nmap <Leader>fc :RGcontroller<SPACE>
@@ -141,10 +153,10 @@ nnoremap <Down> :echoe "Use j"<CR>
 inoremap <C-b> <ESC><Right>bi
 inoremap <C-w> <ESC><Right>wi
 inoremap <C-e> <ESC><Right>ei
-inoremap <C-j> <Down>
-inoremap <C-l> <Right>
+" inoremap <C-k> <Up>
+" inoremap <C-j> <Down>
 inoremap <C-h> <Left>
-inoremap <C-k> <Up>
+inoremap <C-l> <Right>
 
 " Tmux navigation
 nnoremap <silent> <C-h> :TmuxNavigateLeft<cr>
@@ -154,8 +166,9 @@ nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
 nnoremap <silent> <C-'> :TmuxNavigatePrevious<cr>
 
 " Move between linting errors
-nnoremap ]r :ALENextWrap<CR>
-nnoremap [r :ALEPreviousWrap<CR>
+" nnoremap ]r :ALENextWrap<CR>
+" nnoremap [r :ALEPreviousWrap<CR>
+
 
 " Map Ctrl + p to open fuzzy find (FZF)
 nnoremap <c-p> :Files<cr>
@@ -229,6 +242,8 @@ map <C-s> <Plug>(easymotion-sn)
 " Vim-surround
 nmap t' cs"'
 nmap t" cs'"
+" Copy filename
+nmap <Leader>cfn :let @+ = expand("%")<cr>
 
 " Free keybindings
 map <S-h> <Nop>
@@ -254,7 +269,7 @@ endif
 
 " Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
 if executable('rg')
-  let $FZF_DEFAULT_COMMAND = 'rg --hidden --no-ignore -l "" -g "!{log,.git,.terragrunt-cache}/" -g "!tmp/cache" -g "!*.{jpg,png,svg,cache,min.css,min.js,min.scss}"'
+  let $FZF_DEFAULT_COMMAND = 'rg --hidden --no-ignore -l "" -g "!node_modules" -g "!{log,.git,.terragrunt-cache}/" -g "!tmp/cache" -g "!vendor/assets" -g "!p2p-frontend/node_modules" -g "!*.{jpg,png,svg,cache,min.css,min.js,min.scss}" -g "!p2p-frontend/public/assets/chunks"'
 elseif executable('ag')
   " Use Ag over Grep
   set grepprg=ag\ --nogroup\ --nocolor
@@ -272,7 +287,11 @@ endif
 
 command! -bang -nargs=* RGrails
   \ call fzf#vim#grep(
-  \   'rg --column --line-number --no-heading --color=always --smart-case -g "*.{rb,erb,vue,js,es6,css,sass,scss,yml,rake,haml}" -- '.shellescape(<q-args>), 1,
+  \   'rg --column --line-number --no-heading --color=always --smart-case -g "!p2p-frontend" -g "*.{rb,erb,vue,js,es6,css,sass,scss,yml,rake,haml}" -- '.shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview(), <bang>0)
+command! -bang -nargs=* RGall
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case -g "!p2p-frontend/public/assets/chunks" -g "*.{rb,erb,vue,js,es6,css,sass,scss,yml,rake,haml}" -- '.shellescape(<q-args>), 1,
   \   fzf#vim#with_preview(), <bang>0)
 command! -bang -nargs=* RGmodel
   \ call fzf#vim#grep(
@@ -322,12 +341,22 @@ endfunction
 map <Leader>dv :call DectectViewFromController()<CR>
 
 inoremap <silent><expr> <TAB>
-      \ pumvisible() ? coc#_select_confirm() :
-      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#pum#visible() ? coc#pum#next(1):
+      \ CheckBackspace() ? "\<Tab>" :
       \ coc#refresh()
+" inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
-function! s:check_back_space() abort
+inoremap <expr><C-j> coc#pum#visible() ? coc#pum#next(1) : "\<C-j>"
+inoremap <expr><C-k> coc#pum#visible() ? coc#pum#prev(1) : "\<C-k>"
+
+" Make <CR> to accept selected completion item or notify coc.nvim to format
+" <C-g>u breaks current undo, please make your own choice.
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+let g:coc_global_extensions = ['coc-solargraph']
+
+function! CheckBackspace() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
@@ -343,11 +372,7 @@ function! RenameFile()
   endif
 endfunction
 map <Leader>rnf :call RenameFile()<cr>
-" let g:airline#extensions#tabline#enabled = 1
-" let g:airline#extensions#tabline#left_sep = ' '
-" let g:airline#extensions#tabline#left_alt_sep = '|'
-" let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
-"
+
 function TrimEndLines()
   let save_cursor = getpos(".")
   silent! %s#\($\n\s*\)\+\%$##
