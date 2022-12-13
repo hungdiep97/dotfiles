@@ -1,0 +1,17 @@
+#!/bin/sh
+
+DOTFILES_DIR=`pwd`
+HOME_DIR="$HOME"
+
+function link_dotfile {
+  ln -sf $DOTFILES_DIR/$1 $HOME_DIR/.$1
+  echo ".$1 linked to $HOME_DIR/.$1."
+}
+
+files=(zshrc vimrc vimrc.bundles tmux.conf rspec gitconfig)
+for file in "${files[@]}"
+do
+  link_dotfile $file
+done
+
+ln -sf $DOTFILES_DIR/vim $HOME_DIR/.vim
