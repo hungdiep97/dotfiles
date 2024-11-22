@@ -40,7 +40,17 @@ require("lazy").setup({
   { "rking/ag.vim" },
   { "easymotion/vim-easymotion" },
   { "junegunn/gv.vim" },
-  { "Exafunction/codeium.vim", branch = "main" },
+
+  -- Cmp
+  { "hrsh7th/nvim-cmp", dependencies = {
+    "hrsh7th/cmp-nvim-lsp",    -- LSP source for nvim-cmp
+    "hrsh7th/cmp-buffer",      -- Buffer completions
+    "hrsh7th/cmp-path",        -- Path completions
+    "hrsh7th/cmp-cmdline",     -- Command-line completions
+    "saadparwaiz1/cmp_luasnip",-- Snippet completions
+    "L3MON4D3/LuaSnip",        -- Snippet engine
+    "rafamadriz/friendly-snippets" -- Predefined snippets
+  }},
 
   -- Tmux Navigator
   { "christoomey/vim-tmux-navigator" },
@@ -50,6 +60,8 @@ require("lazy").setup({
 
   -- Code Commenting
   { "vim-scripts/tComment" },
+  { "github/copilot.vim" },
+  { "RRethy/nvim-treesitter-endwise" },
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
@@ -84,10 +96,10 @@ require("lazy").setup({
         sections = {
           lualine_a = { "mode" },                        -- Shows current mode (e.g., NORMAL, INSERT)
           lualine_b = { "branch", "diff", "diagnostics" }, -- Shows branch, diffs, and diagnostics
-          lualine_c = { "filename" },                    -- Shows the current file name
+          lualine_c = { { "filename", path = 1 } },                    -- Shows the current file name
           lualine_x = { "encoding", "fileformat", "filetype" }, -- Encoding, format (e.g., UNIX), and file type
           lualine_y = { "progress" },                    -- Shows progress (e.g., line percentage)
-          lualine_z = { "location" }                     -- Shows line and column location
+          lualine_z = { "location" },                     -- Shows line and column location
         },
         inactive_sections = {
           lualine_a = {},
@@ -107,18 +119,19 @@ require("lazy").setup({
     dependencies = { "nvim-tree/nvim-web-devicons" }, -- optional, for file icons
     config = function()
       require("nvim-tree").setup({
-        -- custom configuration options for nvim-tree
-        view = { width = 30, side = "left", },
+        view = {
+          width = 30, side = "left",
+        },
         renderer = {
           icons = {
             show = { git = true, folder = true, file = true, folder_arrow = true, },
           },
         },
         actions = {
-          open_file = { quit_on_open = true, },
+          open_file = { quit_on_open = true, window_picker = { enable = false } },
         },
       })
-    end,
+    end
   },
   {
     "ibhagwan/fzf-lua",
@@ -128,19 +141,52 @@ require("lazy").setup({
       -- calling `setup` is optional for customization
       require("fzf-lua").setup({
         winopts = {
-          height = 0.9,   -- 80% of the total height
-          width = 0.9,    -- 90% of the total width
-          row = 0.1,      -- Centered 10% from the top
-          col = 0.05,     -- Centered 5% from the left
-          preview = {
-            hidden = "nohidden",  -- Show preview by default
-          },
+          height = 1.0,   -- 90% of the total height
+          width = 1.0,    -- 90% of the total width
         },
       })
     end
   },
-  { "tomasiser/vim-code-dark" },
+  -- { "tomasiser/vim-code-dark" },
+  { "Mofiqul/vscode.nvim" },
   { "neovim/nvim-lspconfig" },
 })
 
-vim.cmd("colorscheme codedark")
+-- vim.cmd("colorscheme codedark")
+-- Set the theme options and load it
+vim.g.vscode_style = "dark"              -- Options: "dark" or "light"
+vim.g.vscode_transparent = 0             -- 1 for transparent background
+vim.g.vscode_italic_comment = 1          -- Enable italic comments
+vim.g.vscode_disable_nvimtree_bg = true  -- Match background with NvimTree
+
+-- Load the colorscheme
+vim.cmd("colorscheme vscode")
+
+-- Load nvim-cmp and snippet engine
+local cmp = require('cmp')
+local luasnip = require('luasnip')
+
+-- Load friendly-snippets
+require("luasnip.loaders.from_vscode").lazy_load()
+
+cmp.setup({
+  snippet = {
+    expand = function(args)
+      luasnip.lsp_expand(args.body) -- Use LuaSnip for snippet expansion
+    end,
+  },
+  mapping = cmp.mapping.preset.insert({
+    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<Enter>'] = cmp.mapping.complete(),
+    ['<C-e>'] = cmp.mapping.abort(),
+    ['<C-j>'] = cmp.mapping.select_next_item(),        -- Move to next suggestion
+    ['<C-k>'] = cmp.mapping.select_prev_item(),
+  }),
+  sources = cmp.config.sources({
+    { name = 'nvim_lsp' }, -- LSP completions
+    { name = 'luasnip' },  -- Snippet completions
+    { name = 'buffer' },   -- Buffer completions
+    { name = 'path' },     -- Path completions
+  }),
+})

@@ -159,7 +159,9 @@ map("v", "<TAB>", ">gv", opts)
 map("v", "<S-TAB>", "<gv", opts)
 
 -- EasyMotion shortcut
-map("n", "<C-s>", "<Plug>(easymotion-sn)", {})
+map("n", "<C-s>", "<Plug>(easymotion-sn)", opts)
+map("n", "<Leader><Leader>w", "<Plug>(easymotion-w)", opts)
+map("n", "<Leader><Leader>b", "<Plug>(easymotion-b)", opts)
 
 -- Vim-surround mappings
 map("n", "t'", "cs\"'", opts)
@@ -172,3 +174,6 @@ map("n", "<Leader>cfn", ":let @+ = expand('%')<CR>", opts)
 map("n", "<S-h>", "<Nop>", opts)
 map("n", "<S-l>", "<Nop>", opts)
 map("n", "<S-k>", "<Nop>", opts)
+
+-- Alignment
+map("n", "<Leader>a", "gg<C-v><S-g>=<ESC><C-o>", opts)

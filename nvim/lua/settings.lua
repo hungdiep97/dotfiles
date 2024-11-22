@@ -11,6 +11,8 @@ vim.opt.shiftround = true
 vim.opt.expandtab = true
 vim.opt.timeoutlen = 500
 vim.opt.ttimeoutlen = 0
+vim.opt.autoindent = true
+vim.opt.smartindent = true
 
 vim.opt.tags:append(".git/tags")
 vim.opt.tags = "tags"
