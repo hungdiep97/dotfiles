@@ -14,11 +14,14 @@ vim.g.better_whitpace_enabled = 1
 vim.g.move_key_modifier = "C"
 
 -- Rails migrate command for vim-rails
-vim.g.rails_migrate_command = "Dispatch bundle exec rake"
+vim.g.rails_migrate_command = "AsyncRun bundle exec rake"
 
 -- RSpec command and runner settings for vim-rspec
-vim.g.rspec_command = "Dispatch bundle exec rspec {spec}"
+vim.g.rspec_command = "AsyncRun bundle exec rspec {spec}"
 vim.g.rspec_runner = "os_x_iterm2"
+
+-- AsyncRun config
+vim.g.asyncrun_open = 10
 
 -- Multi-cursor settings
 vim.g.multi_cursor_use_default_mapping = 0
@@ -177,3 +180,30 @@ map("n", "<S-k>", "<Nop>", opts)
 
 -- Alignment
 map("n", "<Leader>a", "gg<C-v><S-g>=<ESC><C-o>", opts)
+
+-- Open the quickfix window if there are results
+vim.api.nvim_create_autocmd("User", {
+  pattern = "AsyncRunStop",
+  callback = function()
+    if #vim.fn.getqflist() > 0 then
+      vim.cmd("copen")
+    end
+  end,
+})
+
+-- Close the quickfix window if no errors are found
+vim.api.nvim_create_autocmd("User", {
+  pattern = "AsyncRunStop",
+  callback = function()
+    local has_errors = false
+    for _, item in ipairs(vim.fn.getqflist()) do
+      if string.match(item.text, "Failed examples") then
+        has_errors = true
+        break
+      end
+    end
+    if not has_errors then
+      vim.cmd("cclose")
+    end
+  end,
+})

@@ -150,6 +150,7 @@ require("lazy").setup({
   -- { "tomasiser/vim-code-dark" },
   { "Mofiqul/vscode.nvim" },
   { "neovim/nvim-lspconfig" },
+  { "skywind3000/asyncrun.vim" },
 })
 
 -- vim.cmd("colorscheme codedark")
